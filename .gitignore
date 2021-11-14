@@ -1,0 +1,5 @@
+.vscode/
+backend/__pycache__
+backend/env
+frontend/app/node_modules
+frontend/app/package-lock.json
