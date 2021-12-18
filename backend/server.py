@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request, make_response, jsonify
 from flask_cors import CORS
+from hot_pepper import kensaku
 from utils import wakati
 
 app = Flask(__name__, static_folder="./build/static", template_folder="./build")
@@ -17,6 +18,7 @@ def parse():
     text = data['post_text']
 
     res = wakati(text)
+    kensaku(text)
     response = {'result': res}
     #print(response)
     return make_response(jsonify(response))
