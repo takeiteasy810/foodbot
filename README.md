@@ -43,12 +43,12 @@ git clone https://github.com/takeiteasy810/foodbot.git
     ※ 自動的にPythonやNode&NPMがインストールされ、npm installとpip installも始まります。
 3. バックエンドを起動
 ```
-$ cd .\backend\
+$ cd ./backend/
 $ python3 server.py
 ```
 4. フロントエンドを起動
 ```
-$ cd .\frontend\app\
+$ cd ./frontend/app/
 $ npm start
 ```
 
