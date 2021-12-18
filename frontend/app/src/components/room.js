@@ -78,11 +78,11 @@ export class Room extends Component {
       this.refs.input.clear();
     }
     // グルメサーチAPIの結果を取得して成形して表示したい
-    this.addMessage('こちらのお店はいかがですか？',{position: "left",theme: "gray",});
-    this.addMessage('<div style="width:200px; height:200px; border:1px solid #DFDFDF; text-align:center;"><img style="width:200px" src="https://imgfp.hotp.jp/IMGH/64/29/P037716429/P037716429_480.jpg" /></div><br/><span style="font-weight:bold; font-size:18px">フレンチバル　レサンス</span><br/><span>【ネット予約可】フレンチバル レサンス（イタリアン・フレンチ/フレンチ）の予約なら、お得なクーポン満載、24時間ネット予約でポイントもたまる【ホットペッパーグルメ】！おすすめはご自宅や仕事場でもお楽しみいただけます。バルのアラカルトメニューからお選びください。 誕生日や記念日など、特別な1日のお食事にはプレートをご用意♪クーポンの利用でサービス可能です★※この店舗はネット予約に対応しています。</span><br/><a href="https://www.hotpepper.jp/strJ001197579/" target="_blank">→ご予約はこちら</a>', {
-      position: "left",
-      theme: "gray",
-    });
+    // this.addMessage('こちらのお店はいかがですか？',{position: "left",theme: "gray",});
+    // this.addMessage('<div style="width:200px; height:200px; border:1px solid #DFDFDF; text-align:center;"><img style="width:200px" src="https://imgfp.hotp.jp/IMGH/64/29/P037716429/P037716429_480.jpg" /></div><br/><span style="font-weight:bold; font-size:18px">フレンチバル　レサンス</span><br/><span>【ネット予約可】フレンチバル レサンス（イタリアン・フレンチ/フレンチ）の予約なら、お得なクーポン満載、24時間ネット予約でポイントもたまる【ホットペッパーグルメ】！おすすめはご自宅や仕事場でもお楽しみいただけます。バルのアラカルトメニューからお選びください。 誕生日や記念日など、特別な1日のお食事にはプレートをご用意♪クーポンの利用でサービス可能です★※この店舗はネット予約に対応しています。</span><br/><a href="https://www.hotpepper.jp/strJ001197579/" target="_blank">→ご予約はこちら</a>', {
+    //   position: "left",
+    //   theme: "gray",
+    // });
   }
 
   render() {
