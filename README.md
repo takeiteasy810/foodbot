@@ -36,6 +36,24 @@ https://git-scm.com/book/ja/v2/%E4%BD%BF%E3%81%84%E5%A7%8B%E3%82%81%E3%82%8B-Git
 - ソースコードのクローン<br>
 git clone https://github.com/takeiteasy810/foodbot.git
 
+### 環境構築 -- VisualStudio code & Docker Container --
+1. 「表示」 から 「コマンドパレット」を選択
+2. 「> Remote-Containers: Reopen in Container」を選択
+   
+    ※ 自動的にPythonやNode&NPMがインストールされ、npm installとpip installも始まります。
+3. バックエンドを起動
+```
+$ cd .\backend\
+$ python3 server.py
+```
+4. フロントエンドを起動
+```
+$ cd .\frontend\app\
+$ npm start
+```
+
+### 環境構築 -- ローカル環境 --
+
 ### バックエンド
 #### 仮想環境を作成
 vscodeのコマンドパレットからターミナルを開き以下のコマンドを実行。
