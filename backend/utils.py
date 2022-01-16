@@ -10,6 +10,7 @@ key = ''
 def mainmain(data):
     inputText = ''
     gpsVaule = ''
+    yoasobi = ''
     result = {}
 
     # 入力テキスト
@@ -19,12 +20,23 @@ def mainmain(data):
     gpsVaule = ''
     if 'gps_Value' in data:
         gpsVaule = data['gps_Value']
+    # if 'yoasobi' in data:
+    #     yoasobi = data['yoasobi']
     # 形態素解析
     noun = wakati(inputText)
     # API検索
-    json_text = hotPepperSearch({'noun': noun, 'gpsVaule': gpsVaule})
+    json_text = hotPepperSearch(
+        {
+            'noun': noun['noun'],
+            'gpsVaule': gpsVaule,
+            'yoasobi': noun['yoasobi'],
+            'osake': noun['osake']
+        }
+    )
     # 検索結果が0かどうか
-    if json_text["results"]['results_available'] == 0:
+    if 'error' in json_text["results"]:
+        result['error'] = json_text["results"]['error'][0]['message']
+    elif json_text["results"]['results_available'] == 0:
         result['error'] = '申し訳ございません。\n条件に引っかかるお店がありませんでした。'
     else:
         # お店の画像
@@ -44,9 +56,11 @@ def mainmain(data):
 # 形態素解析
 def wakati(text):
     # 解析する辞書
-    m = MeCab.Tagger('-Ochasen')
+    # m = MeCab.Tagger('-Ochasen')
     # m = MeCab.Tagger('-Owakati')
     # m = MeCab.Tagger('-Owakati -d /usr/local/lib/mecab/dic/ipadic')#normal ipadic辞書指定
+    m = MeCab.Tagger(
+        '-Ochasen -d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd')
     # m = MeCab.Tagger('-Ochasen -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd/')
 
     # 解析結果
@@ -55,58 +69,103 @@ def wakati(text):
     # 名詞だけを抽出
     lines = hoge.split('\n')
     noun = []  # 名詞が入っている
+    yoasobi = False  # 深夜検索か
+    osake = False  # お酒必須か
+
     for line in lines:
         feature = line.split('\t')
         if len(feature) > 2:  # 'EOS'と''を省く
             info = feature[3].split('-')
+            # print(feature[0])
+            # print(info)
             if info[0] in ('名詞'):
-                # print(feature[0])
-                noun.append(feature[0])
-
-    # 抽出した名詞を返す
-    return noun
-
-# 検索文:  今日 久しぶり 彼女 デート 奮発 雰囲気 店 フレンチ
-# 分解した言葉をAPIジャンル分け
-# def recognition(nouns):
-#     for noun in nouns:
-#     if()
+                if info[1] in ('一般'):
+                    # print(feature[0])
+                    # print(info)
+                    noun.append(feature[0])
+                if info[1] in ('副詞可能'):
+                    if feature[0] == '深夜':
+                        yoasobi = True
+                if info[1] in ('固有名詞'):
+                    if feature[0] == 'お酒':
+                        print('お酒')
+                        osake = True
+    # 抽出した結果を返す
+    return {'noun': noun, 'yoasobi': yoasobi, 'osake': osake}
 
 
 def hotPepperSearch(data):
+    print(data)
     url = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
 
-    serchhoge = ''
+    serchhoge = ''  # 検索文字
+    gpsLatitude = ''  # 位置
+    gpsLongitude = ''  # 位置
+    midnight = ''  # 深夜営業
+    midnight_meal = ''  # 深夜注文
+    free_drink = ''  # 飲み放題
+    cocktail = ''  # カクテル
+    shochu = ''  # 焼酎
+    sake = ''  # 日本酒
+    wine = ''  # ワイン
 
+    # 検索キーワード生成
     for noun in data['noun']:
-        if(noun == 'フレンチ'):
-            print('実行')
-            serchhoge += noun
+        if noun == '久しぶり':
+            print()
+        elif noun == '雰囲気':
+            print()
+        elif noun == '店':
+            print()
+        elif noun == '家':
+            print()
+        else:
+            serchhoge += noun + ' '
 
-    # print(data)
+    # 位置情報
+    if 'latitude' in data['gpsVaule']:
+        gpsLatitude = data['gpsVaule']['latitude']
+        gpsLongitude = data['gpsVaule']['longitude']
+
+    #　深夜判定
+    if 'yoasobi' in data:
+        if data['yoasobi']:
+            # print('深夜検索')
+            midnight = 1
+            midnight_meal = 1
+
+    # お酒
+    if 'osake' in data:
+        if data['osake']:
+            # print('お酒')
+            free_drink = 1  # 飲み放題
+            # cocktail = 1  # カクテル
+            # shochu = 1  # 焼酎
+            # sake = 1  # 日本酒
+            # wine = 1  # ワイン
+
+    print('検索ワード')
+    print(serchhoge)
+
     # APIキーが有効化どうか判別
     if key == '':
         return 'Error : backend/hot_pepper.pyのKeyにAPIキーを入力してください'
     else:
-        get_request = ''
-        if not data['gpsVaule']:
-            # 通常検索
-            get_request = requests.get(url, params={
-                'key': key,
-                'keyword': serchhoge,
-                'count': 1,
-                'format': 'json'
-            })
-        else:
-            # 位置情報付き検索
-            get_request = requests.get(url, params={
-                'key': key,
-                'keyword': serchhoge,
-                'count': 1,
-                'format': 'json',
-                'lat': data['gpsVaule']['latitude'],
-                'lng': data['gpsVaule']['longitude']
-            })
+        get_request = requests.get(url, params={
+            'key': key,
+            'keyword': serchhoge,
+            'count': 1,
+            'format': 'json',
+            'lat': gpsLatitude,
+            'lng': gpsLongitude,
+            'midnight': midnight,
+            'midnight_meal': midnight_meal,
+            'free_drink': free_drink,
+            'cocktail': cocktail,
+            'shochu': shochu,
+            'sake': sake,
+            'wine': wine
+        })
         # print(get_request.text)
         # 検索結果をJSON化して返す
         return json.loads(get_request.text)
