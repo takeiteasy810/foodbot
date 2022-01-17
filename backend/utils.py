@@ -1,3 +1,4 @@
+from unittest import result
 import requests
 import json
 import MeCab
@@ -10,7 +11,6 @@ key = ''
 def mainmain(data):
     inputText = ''
     gpsVaule = ''
-    yoasobi = ''
     result = {}
 
     # 入力テキスト
@@ -20,8 +20,6 @@ def mainmain(data):
     gpsVaule = ''
     if 'gps_Value' in data:
         gpsVaule = data['gps_Value']
-    # if 'yoasobi' in data:
-    #     yoasobi = data['yoasobi']
     # 形態素解析
     noun = wakati(inputText)
     # API検索
@@ -88,16 +86,17 @@ def wakati(text):
                         yoasobi = True
                 if info[1] in ('固有名詞'):
                     if feature[0] == 'お酒':
-                        print('お酒')
+                        # print('お酒')
                         osake = True
     # 抽出した結果を返す
     return {'noun': noun, 'yoasobi': yoasobi, 'osake': osake}
 
 
 def hotPepperSearch(data):
-    print(data)
+    # print(data)
     url = 'http://webservice.recruit.co.jp/hotpepper/gourmet/v1/'
 
+    apiResult = ''  # レスポンス
     serchhoge = ''  # 検索文字
     gpsLatitude = ''  # 位置
     gpsLongitude = ''  # 位置
@@ -144,20 +143,21 @@ def hotPepperSearch(data):
             # sake = 1  # 日本酒
             # wine = 1  # ワイン
 
-    print('検索ワード')
-    print(serchhoge)
+    # print('検索ワード')
+    # print(serchhoge)
 
     # APIキーが有効化どうか判別
     if key == '':
         return 'Error : backend/hot_pepper.pyのKeyにAPIキーを入力してください'
     else:
-        get_request = requests.get(url, params={
+        axiosResult = requests.get(url, params={
             'key': key,
             'keyword': serchhoge,
             'count': 1,
             'format': 'json',
             'lat': gpsLatitude,
             'lng': gpsLongitude,
+            'range': 5,
             'midnight': midnight,
             'midnight_meal': midnight_meal,
             'free_drink': free_drink,
@@ -166,6 +166,27 @@ def hotPepperSearch(data):
             'sake': sake,
             'wine': wine
         })
+        apiResult = json.loads(axiosResult.text)
+
+        # ヒットしない場合は全国で検索
+        if apiResult["results"]['results_available'] == 0:
+            # print('ヒット無し')
+            # ヒット無し
+            axiosResult = requests.get(url, params={
+                'key': key,
+                'keyword': serchhoge,
+                'count': 1,
+                'format': 'json',
+                'midnight': midnight,
+                'midnight_meal': midnight_meal,
+                'free_drink': free_drink,
+                'cocktail': cocktail,
+                'shochu': shochu,
+                'sake': sake,
+                'wine': wine
+            })
+            apiResult = json.loads(axiosResult.text)
+
         # print(get_request.text)
         # 検索結果をJSON化して返す
-        return json.loads(get_request.text)
+        return apiResult
