@@ -57,8 +57,15 @@ def wakati(text):
     # m = MeCab.Tagger('-Ochasen')
     # m = MeCab.Tagger('-Owakati')
     # m = MeCab.Tagger('-Owakati -d /usr/local/lib/mecab/dic/ipadic')#normal ipadic辞書指定
+
+    # x86 64Bit Intel系 AMD系 CPU
+    # m = MeCab.Tagger(
+    #     '-Ochasen -d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd')
+
+    # ARM64(AArch64) 64Bit Apple_M系 Qualcomm_Snapdragon系 CPU
     m = MeCab.Tagger(
-        '-Ochasen -d /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd')
+        '-Ochasen -d /usr/lib/aarch64-linux-gnu/mecab/dic/mecab-ipadic-neologd')
+    
     # m = MeCab.Tagger('-Ochasen -d /usr/local/lib/mecab/dic/mecab-ipadic-neologd/')
 
     # 解析結果
@@ -85,6 +92,7 @@ def wakati(text):
                     if feature[0] == '深夜':
                         yoasobi = True
                 if info[1] in ('固有名詞'):
+                    noun.append(feature[0])
                     if feature[0] == 'お酒':
                         # print('お酒')
                         osake = True
@@ -114,9 +122,13 @@ def hotPepperSearch(data):
             print()
         elif noun == '雰囲気':
             print()
+        elif noun == '気分':
+            print()
         elif noun == '店':
             print()
         elif noun == '家':
+            print()
+        elif noun == '友達':
             print()
         else:
             serchhoge += noun + ' '
